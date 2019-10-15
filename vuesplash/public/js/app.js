@@ -1763,6 +1763,11 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 //
 //
 /* harmony default export */ __webpack_exports__["default"] = ({
+  computed: {
+    isLogin: function isLogin() {
+      return this.$store.getters['auth/check'];
+    }
+  },
   methods: {
     logout: function () {
       var _logout = _asyncToGenerator(
@@ -3265,17 +3270,17 @@ var render = function() {
     "footer",
     { staticClass: "footer" },
     [
-      _c(
-        "button",
-        { staticClass: "button button--link", on: { click: _vm.logout } },
-        [_vm._v("Logout")]
-      ),
-      _vm._v(" "),
-      _c(
-        "RouterLink",
-        { staticClass: "button button--link", attrs: { to: "/login" } },
-        [_vm._v("\n    Login / Register\n  ")]
-      )
+      _vm.isLogin
+        ? _c(
+            "button",
+            { staticClass: "button button--link", on: { click: _vm.logout } },
+            [_vm._v("Logout")]
+          )
+        : _c(
+            "RouterLink",
+            { staticClass: "button button--link", attrs: { to: "/login" } },
+            [_vm._v("\n    Login / Register\n  ")]
+          )
     ],
     1
   )
