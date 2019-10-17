@@ -1902,6 +1902,7 @@ __webpack_require__.r(__webpack_exports__);
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @babel/runtime/regenerator */ "./node_modules/@babel/runtime/regenerator/index.js");
 /* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _util__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../util */ "./resources/js/util.js");
 
 
 function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
@@ -1923,6 +1924,12 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 //
 //
 //
+//
+//
+//
+//
+//
+
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: {
     value: {
@@ -1933,7 +1940,8 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
   data: function data() {
     return {
       preview: null,
-      photo: null
+      photo: null,
+      errors: null
     };
   },
   methods: {
@@ -1991,11 +1999,31 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
               case 4:
                 response = _context.sent;
-                this.reset();
-                this.$emit('input', false);
-                this.$router.push("/photos/".concat(response.data.id));
+
+                if (!(response.status === _util__WEBPACK_IMPORTED_MODULE_1__["UNPROCESSABLE_ENTITY"])) {
+                  _context.next = 8;
+                  break;
+                }
+
+                this.errors = response.data.errors;
+                return _context.abrupt("return", false);
 
               case 8:
+                this.reset();
+                this.$emit('input', false);
+
+                if (!(response.status !== _util__WEBPACK_IMPORTED_MODULE_1__["CREATED"])) {
+                  _context.next = 13;
+                  break;
+                }
+
+                this.$store.commit('error/setCode', response.status);
+                return _context.abrupt("return", false);
+
+              case 13:
+                this.$router.push("/photos/".concat(response.data.id));
+
+              case 14:
               case "end":
                 return _context.stop();
             }
@@ -3636,6 +3664,20 @@ var render = function() {
           }
         },
         [
+          _vm.errors
+            ? _c("div", { staticClass: "errors" }, [
+                _vm.errors.photo
+                  ? _c(
+                      "ul",
+                      _vm._l(_vm.errors.photo, function(msg) {
+                        return _c("li", { key: msg }, [_vm._v(_vm._s(msg))])
+                      }),
+                      0
+                    )
+                  : _vm._e()
+              ])
+            : _vm._e(),
+          _vm._v(" "),
           _c("input", {
             staticClass: "form__item",
             attrs: { type: "file" },
